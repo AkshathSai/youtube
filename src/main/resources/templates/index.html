@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--<html lang="en" data-bs-theme="dark" class="sl-theme-dark">-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Bootstrap CSS -->
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <!-- HTMX -->
+    <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
+    <!-- Bootstrap ICONS -->
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}">
+    <!-- Shoelace -->
+    <link rel="stylesheet" th:href="@{/webjars/shoelace-style__shoelace/cdn/themes/light.css}">
+    <link rel="stylesheet" th:href="@{/webjars/shoelace-style__shoelace/cdn/themes/dark.css}" />
+    <script type="module" th:src="@{/webjars/shoelace-style__shoelace/cdn/shoelace-autoloader.js}"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+        /*body {
+            background-color: black;
+        }
+        .card {
+            background-color: black;
+        }*/
+        /*.globalProgress {
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            height: 4px;
+            width: 100%;
+            border-radius: 2px;
+            background-clip: padding-box;
+            overflow: hidden;
+        }*/
+        .globalProgress {
+            display: none;
+            --height: 6px;
+        }
+        .htmx-request .globalProgress {
+            display: inline;
+        }
+        .htmx-request.globalProgress {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+
+    <sl-progress-bar indeterminate class="globalProgress"></sl-progress-bar>
+
+    <nav class="container">
+        <div class="row">
+            <h1 class="display-6 text-center">Yo! Tube</h1>
+        </div>
+        <div class="row">
+            <sl-input type="search"
+                   placeholder="YouTube Search"
+                   id="youtube-search"
+                   name="query"
+                   hx-trigger="input changed delay:500ms, search"
+                   hx-get="/search"
+                   hx-indicator=".globalProgress"
+                   hx-target="#ytVideos"
+                   hx-push-url="true"
+                   autofocus
+            size="large"></sl-input>
+        </div>
+    </nav>
+
+    <main class="container-fluid text-center mt-4">
+
+        <div class="row">
+            <div id="ytPlayerContainer" class="col-md-8"></div>
+            <div id="ytVideos" class="col text-truncate" th:fragment="ytVideos">
+                <div class="card mb-3" style="max-width: 540px;" th:each="video : ${videos}">
+                    <div class="row g-0"
+                         hx:get="@{/watch/{v}(v=${video.url})}"
+                         hx-target="#ytPlayerContainer">
+                        <div class="col-md-4">
+                            <img th:src="${video.thumbnailUrl}" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h6 class="card-title" th:text="${video.title}"></h6>
+                                <!--                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
+                                <!--                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+    </footer>
+
+</body>
+</html>
